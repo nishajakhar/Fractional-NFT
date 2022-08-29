@@ -7,22 +7,34 @@
 const hre = require("hardhat");
 
 async function main() {
-  const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-  const ONE_YEAR_IN_SECS = 365 * 24 * 60 * 60;
-  const unlockTime = currentTimestampInSeconds + ONE_YEAR_IN_SECS;
+  const CryptoPuppies = await hre.ethers.getContractFactory("CryptoPuppies");
+  const cryptoPuppies = await CryptoPuppies.deploy();
 
-  const lockedAmount = hre.ethers.utils.parseEther("1");
-
-  const Lock = await hre.ethers.getContractFactory("Lock");
-  const lock = await Lock.deploy(unlockTime, { value: lockedAmount });
-
-  await lock.deployed();
-
+  await cryptoPuppies.deployed();  
   console.log(
-    `Lock with 1 ETH and unlock timestamp ${unlockTime} deployed to ${lock.address}`
+    `CryptoPuppies deployed to ${cryptoPuppies.address}`
   );
+
+  /* Step to perform Now
+      Step 1: Mint a token in the cryptoPuppies contract and set the tokenId with the id of token you want to fractionalize
+      Step 2 : Comment the code of above this comment and uncomment below this
+      Step 3 : Replace nftAddress and tokenId with yours
+      Step 4 : Now run the deploy script to deploy fraction Puppies contract
+  */
+  // const tokenId = 1;
+  // const nftAddress = '0x89077F193F07447c7249A3De4BA35d86519302f8';
+  // const FractionPuppies = await hre.ethers.getContractFactory("FractionPuppies");
+  // const fractionPuppies = await FractionPuppies.deploy("FractionPuppies", "FPP", nftAddress, tokenId);
+
+  // await fractionPuppies.deployed();
+
+  // console.log(
+  //   `FractionPuppies deployed to ${fractionPuppies.address}`
+  // );
+
 }
 
+// FractionPuppies Address : 0x84b7F36b9003A950BfEEd655F1Fd9867F4879f2C (Goerli)
 // We recommend this pattern to be able to use async/await everywhere
 // and properly handle errors.
 main().catch((error) => {
