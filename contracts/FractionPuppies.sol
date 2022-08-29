@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 
 
-contract MyFNFT is ERC20, ERC721Holder, ERC20Burnable {
+contract FractionPuppies is ERC20, ERC721Holder, ERC20Burnable {
     IERC721 public nftContractAddress;
     uint public nftId;
     uint public startsAt;
@@ -16,7 +16,7 @@ contract MyFNFT is ERC20, ERC721Holder, ERC20Burnable {
     uint public price;
     uint public auctionDurationInHours;
     address public seller;
-    bool initialized = false;
+    bool public initialized = false;
 
     constructor(string memory _name,  string memory _symbol, 
         address _nftContractAddress, uint _nftId) ERC20(_name, _symbol) {
@@ -48,7 +48,8 @@ contract MyFNFT is ERC20, ERC721Holder, ERC20Burnable {
 
     function buy(uint _amount) external payable {
         require(block.timestamp < endsAt, "Auction Sale Period Ended");
-        require(price * _amount >= msg.value, "Not Enough Ether Sent");
+        require(msg.value >= price * _amount, "Not Enough Ether Sent");
+        require(balanceOf(seller) >= _amount, "Not Enough Tokens");
         _transfer(seller, msg.sender, _amount);
         if(msg.value > (price * _amount)) {
             address(msg.sender).call{value : msg.value - (price * _amount)}("");
